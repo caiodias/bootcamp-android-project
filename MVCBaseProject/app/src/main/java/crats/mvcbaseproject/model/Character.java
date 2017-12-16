@@ -8,56 +8,54 @@ import android.graphics.Bitmap;
 
 public class Character {
 
-    private boolean mClicked = false;
-    private String mName;
-    private int mID;
-    private String mDescrp;
-    private Bitmap mImage;
-    private int mAvailableComics;
-    private String mWikiURL;
+    private boolean Clicked = false;
+    private String Name;
+    private int ID;
+    private String Desc;
+    private Bitmap Image;
+    private int AvailableComics;
 
-    public Character(String name, int ID, String descrp, Bitmap image, int availableComics, String wikiURL){
-        mName = name;
-        mID = ID;
-        mDescrp = descrp;
-        mImage = image;
-        mAvailableComics = availableComics;
-        mWikiURL = wikiURL;
+
+    public Character(String name, int ID, String descrp, Bitmap image, int availableComics){
+        Name = name;
+        ID = ID;
+        Desc = descrp;
+        Image = image;
+        AvailableComics = availableComics;
+
     }
 
     public String getCharName(){
-        return mName;
+        return Name;
     }
 
     public int getID(){
-        return mID;
+        return ID;
     }
 
     public String getDecrp(){
-        return mDescrp;
+        return Desc;
     }
 
     public Bitmap getImage(){
-        return mImage;
+        return Image;
     }
 
     public int getAvailableComics(){
-        return mAvailableComics;
+        return AvailableComics;
     }
 
-    public String getWikiURL(){
-        return mWikiURL;
-    }
+
 
     public void gotClicked(){
-        mClicked = true;
+        Clicked = true;
     }
 
     public boolean wasClicked(){
-        return mClicked;
+        return Clicked;
     }
 
     public void unClicked(){
-        mClicked = false;
+        Clicked = false;
     }
 }
