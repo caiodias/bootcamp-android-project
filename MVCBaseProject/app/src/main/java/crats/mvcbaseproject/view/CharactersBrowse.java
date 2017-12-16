@@ -23,9 +23,13 @@ import java.util.Calendar;
 
 import crats.mvcbaseproject.R;
 import crats.mvcbaseproject.controller.CharacterAdapter;
+import crats.mvcbaseproject.controller.Network;
+import crats.mvcbaseproject.controller.Query;
 import crats.mvcbaseproject.controller.SECRET_KEYS;
 import crats.mvcbaseproject.model.Character;
 import static android.view.View.GONE;
+import crats.mvcbaseproject.controller.Query;
+import crats.mvcbaseproject.controller.Network;
 
 public class CharactersBrowse extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Pair<ArrayList<Character>, Integer>> {
 
