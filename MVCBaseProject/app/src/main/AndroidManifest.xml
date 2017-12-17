@@ -14,18 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:parentActivityName=".view.PersonNamesListScreen"
+            android:name=".view.ProjectLists"
             android:label="Example"
-            android:name=".view.ProjectLists">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:parentActivityName=".view.PersonNamesListScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
-        <activity android:name=".view.CharactersBrowse" />
-        <activity android:name=".view.MainActivity"></activity>
+        <activity android:name=".view.MainActivity" />
+        <activity android:name=".view.Characters"></activity>
     </application>
 
 </manifest>

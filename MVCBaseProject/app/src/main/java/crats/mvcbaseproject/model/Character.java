@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 
 public class Character {
 
-    private boolean Clicked = false;
     private String Name;
     private int ID;
     private String Desc;
@@ -47,15 +46,4 @@ public class Character {
 
 
 
-    public void gotClicked(){
-        Clicked = true;
-    }
-
-    public boolean wasClicked(){
-        return Clicked;
-    }
-
-    public void unClicked(){
-        Clicked = false;
-    }
 }
