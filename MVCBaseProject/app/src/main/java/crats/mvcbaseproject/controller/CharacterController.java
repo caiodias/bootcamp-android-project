@@ -36,7 +36,7 @@ public class CharacterController implements ICharacterApi {
     private ICharacterApi iCharacterApi = null;
     private ICharacterController iCharacterController = null;
 
-    private final String url = "https://gateway.marvel.com:443/v1/public/characters";
+    private final String url = "https://gateway.marvel.com:443/v1/public/characters?apikey=4a2df8ec59bb23e9628c1c974305ea7f";
     private RequestQueue requestQueue = null;
     private CharacterController() {
         // Nothing
