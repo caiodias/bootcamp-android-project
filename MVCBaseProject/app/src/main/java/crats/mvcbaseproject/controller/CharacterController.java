@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,12 +23,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import crats.mvcbaseproject.model.Character;
 
 import static com.android.volley.toolbox.Volley.newRequestQueue;
+import static crats.mvcbaseproject.controller.CharacterController.getBitmapFromURL;
 
 
 /**
@@ -35,139 +40,57 @@ import static com.android.volley.toolbox.Volley.newRequestQueue;
  */
 
 public class CharacterController implements ICharacterApi {
-    private static CharacterController instance = null;
-    private ArrayList<Character> listOfObjects= new ArrayList<Character>();
-    private final int LIMIT = 10;
+
     private ICharacterApi iCharacterApi = null;
     private ICharacterController iCharacterController = null;
-    private int offset = 0;
-    private final String QUERY_URL = "https://gateway.marvel.com:443/v1/public/characters";
-
-    private RequestQueue requestQueue = null;
-    private CharacterController() {
-        // Nothing
-    }
-
-    public String onCreateLoader() {
-
-        Uri baseUri = Uri.parse(QUERY_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-        String timeStamp = Calendar.getInstance().getTime().toString();
-        uriBuilder.appendQueryParameter("apikey", SECRET_KEYS.PUBLIC_KEY);
-        uriBuilder.appendQueryParameter("limit", LIMIT +"");
-        uriBuilder.appendQueryParameter("ts", timeStamp);
-        uriBuilder.appendQueryParameter("offset", offset + "");
-        uriBuilder.appendQueryParameter("hash", getMD5Hash(timeStamp));
-        String x = uriBuilder.toString();
-        Log.d("",x);
-        return x;
-
-    }
-    public void setupCharacterController(ICharacterController delegateHandler, Context context){
-        this.iCharacterApi = this;
-        this.iCharacterController = delegateHandler;
-        requestQueue = newRequestQueue(context);
-    }
-
-    public static CharacterController shared() {
-        if (instance == null){
-            instance = new CharacterController();
-        }
-
-        return instance;
-    }
-
-    public ArrayList<Character> getListOfObject(){
-        return listOfObjects;
-    }
-
-    public void fetchList() {
-        requestQueue.add(fetchCharacterRequest());
-        requestQueue.start();
-    }
-
 
     @Override
     public void fetchSuccess(ArrayList<Character> list) {
-        this.listOfObjects = list;
-        iCharacterController.fetchCharacterSuccess();
+
     }
 
     @Override
     public void fetchFailure(String errorMessage) {
-        iCharacterController.fetchCharacterFailure(errorMessage);
 
     }
-    private JsonObjectRequest fetchCharacterRequest(){
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
-                onCreateLoader(),
 
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // To avoid create variable inside of loops
-                        ArrayList<Character> returnList = new ArrayList<Character>();
-
-                        try {
-
-                            JSONObject mainObject = response.getJSONObject("data");
-                            JSONArray results = mainObject.getJSONArray("results");
-                            int total = mainObject.getInt("total");
-                            for (int i = 0; i < results.length(); i++) {
-                                JSONObject curr = results.getJSONObject(i);
-                                int id = curr.getInt("id");
-                                String name = curr.getString("name");
-                                String descrp = curr.getString("description");
-                                int availableComics = curr.getJSONObject("comics").getInt("available");
-
-                                JSONObject image = curr.getJSONObject("thumbnail");
-                                String imageUrl = image.getString("path") + "." + image.getString("extension");
-
-                                Bitmap imageBitmap = getBitmapFromURL(imageUrl);
-                                Character character = new Character(name, id, descrp, imageBitmap, availableComics);
-                                listOfObjects.add(character);
-                            }
-
-                            iCharacterApi.fetchSuccess(returnList);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-
-                            iCharacterApi.fetchFailure("JSON read failure");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                            iCharacterApi.fetchFailure("Unknown failure");
-                        }
-                    }
-
-                },
-
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // On error response, implement callback for it too
-                        Log.e("API error", "Server ERROR: " + error.getMessage());
-                        iCharacterApi.fetchFailure(error.getMessage());
-                    }
-                });
-
-
-        return jsonObjectRequest;
+    private CharacterController() {
     }
-    public static Bitmap getBitmapFromURL(String src) {
+
+
+    public static Pair<ArrayList<Character>, Integer> extractCharacters(String JSONResponse) {
+
+        ArrayList<Character> characters = new ArrayList<>();
+        Integer total = 0;
         try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            JSONObject jsonObject = new JSONObject(JSONResponse);
+            JSONObject mainObject = jsonObject.getJSONObject("data");
+            JSONArray results = mainObject.getJSONArray("results");
+            total = mainObject.getInt("total");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject curr = results.getJSONObject(i);
+                int id = curr.getInt("id");
+                String name = curr.getString("name");
+                String descrp = curr.getString("description");
+                int availableComics = curr.getJSONObject("comics").getInt("available");
+
+                JSONObject image = curr.getJSONObject("thumbnail");
+                String imageUrl = image.getString("path") + "." + image.getString("extension");
+                Bitmap imageBitmap = getBitmapFromURL(imageUrl);
+                Character character = new Character(name, id, descrp, imageBitmap, availableComics);
+                characters.add(character);
+            }
+        } catch (JSONException e) {
+
+            Log.e("character JSON", "Problem parsing the character JSON results", e);
         }
+
+        // Return the list of earthquakes
+        return new Pair<>(characters, total);
     }
+
+
+
     public static String getMD5Hash(String timeStamp) {
         StringBuilder sb = new StringBuilder();
         try {
@@ -182,5 +105,27 @@ public class CharacterController implements ICharacterApi {
         }
         return sb.toString();
     }
+
+
+
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+
 
 }

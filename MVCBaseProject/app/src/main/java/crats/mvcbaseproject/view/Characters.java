@@ -23,8 +23,8 @@ import java.util.Calendar;
 
 import crats.mvcbaseproject.R;
 import crats.mvcbaseproject.controller.CharacterAdapter;
+import crats.mvcbaseproject.controller.CharacterController;
 import crats.mvcbaseproject.controller.Network;
-import crats.mvcbaseproject.controller.Query;
 import crats.mvcbaseproject.controller.SECRET_KEYS;
 import crats.mvcbaseproject.model.Character;
 import static android.view.View.GONE;
@@ -90,7 +90,7 @@ public Loader<Pair<ArrayList<Character>, Integer>> onCreateLoader(int id, Bundle
         uriBuilder.appendQueryParameter("limit", LIMIT +"");
         uriBuilder.appendQueryParameter("ts", timeStamp);
         uriBuilder.appendQueryParameter("offset", offset + "");
-        uriBuilder.appendQueryParameter("hash", crats.mvcbaseproject.controller.Query.getMD5Hash(timeStamp));
+        uriBuilder.appendQueryParameter("hash", crats.mvcbaseproject.controller.CharacterController.getMD5Hash(timeStamp));
         return new CharacterLoader(this, uriBuilder.toString());
         }
 
@@ -134,7 +134,7 @@ private static class CharacterLoader extends AsyncTaskLoader<Pair<ArrayList<Char
 
     @Override
     public Pair<ArrayList<Character>, Integer> loadInBackground() {
-        return Query.extractCharacters(Network.getData(mUrl));
+        return CharacterController.extractCharacters(Network.getData(mUrl));
     }
 }
 
