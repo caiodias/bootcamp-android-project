@@ -3,6 +3,8 @@ package crats.mvcbaseproject.controller;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -18,13 +20,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import crats.mvcbaseproject.model.Character;
-import crats.mvcbaseproject.model.Person;
-
 
 import static com.android.volley.toolbox.Volley.newRequestQueue;
+
+
 /**
  * Created by arsh on 2017-12-17.
  */
@@ -32,16 +37,32 @@ import static com.android.volley.toolbox.Volley.newRequestQueue;
 public class CharacterController implements ICharacterApi {
     private static CharacterController instance = null;
     private ArrayList<Character> listOfObjects= new ArrayList<Character>();
-
+    private final int LIMIT = 15;
     private ICharacterApi iCharacterApi = null;
     private ICharacterController iCharacterController = null;
+    private int offset = 0;
+    private final String QUERY_URL = "https://gateway.marvel.com:443/v1/public/characters";
 
-    private final String url = "https://gateway.marvel.com:443/v1/public/characters?apikey=4a2df8ec59bb23e9628c1c974305ea7f";
     private RequestQueue requestQueue = null;
     private CharacterController() {
         // Nothing
     }
 
+    public String onCreateLoader() {
+
+        Uri baseUri = Uri.parse(QUERY_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        String timeStamp = Calendar.getInstance().getTime().toString();
+        uriBuilder.appendQueryParameter("apikey", SECRET_KEYS.PUBLIC_KEY);
+        uriBuilder.appendQueryParameter("limit", LIMIT +"");
+        uriBuilder.appendQueryParameter("ts", timeStamp);
+        uriBuilder.appendQueryParameter("offset", offset + "");
+        uriBuilder.appendQueryParameter("hash", getMD5Hash(timeStamp));
+        String x = uriBuilder.toString();
+        Log.d("",x);
+        return x;
+
+    }
     public void setupCharacterController(ICharacterController delegateHandler, Context context){
         this.iCharacterApi = this;
         this.iCharacterController = delegateHandler;
@@ -78,8 +99,8 @@ public class CharacterController implements ICharacterApi {
 
     }
     private JsonObjectRequest fetchCharacterRequest(){
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
-                url,
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                onCreateLoader(),
 
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -87,12 +108,9 @@ public class CharacterController implements ICharacterApi {
                         // To avoid create variable inside of loops
                         ArrayList<Character> returnList = new ArrayList<Character>();
 
-                        JSONArray jsonArray = null;
-                        JSONObject jsonObject = null;
-
                         try {
 
-                            JSONObject mainObject = jsonObject.getJSONObject("data");
+                            JSONObject mainObject = response.getJSONObject("data");
                             JSONArray results = mainObject.getJSONArray("results");
                             int total = mainObject.getInt("total");
                             for (int i = 0; i < results.length(); i++) {
@@ -104,8 +122,8 @@ public class CharacterController implements ICharacterApi {
 
                                 JSONObject image = curr.getJSONObject("thumbnail");
                                 String imageUrl = image.getString("path") + "." + image.getString("extension");
-                                Bitmap imageBitmap = getBitmapFromURL(imageUrl);
-                                Character character = new Character(name, id, descrp, imageBitmap, availableComics);
+                               ;
+                                Character character = new Character(name, id, descrp, availableComics);
                                 listOfObjects.add(character);
                             }
 
@@ -135,18 +153,33 @@ public class CharacterController implements ICharacterApi {
 
         return jsonObjectRequest;
     }
-    public static Bitmap getBitmapFromURL(String src) {
+//    public static Bitmap getBitmapFromURL(String src) {
+//        try {
+//            java.net.URL url = new java.net.URL(src);
+//            HttpURLConnection connection = (HttpURLConnection) url
+//                    .openConnection();
+//            connection.setDoInput(true);
+//            connection.connect();
+//            InputStream input = connection.getInputStream();
+//            return BitmapFactory.decodeStream(input);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+    public static String getMD5Hash(String timeStamp) {
+        StringBuilder sb = new StringBuilder();
         try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update((timeStamp + SECRET_KEYS.PRIVATE_KEY + SECRET_KEYS.PUBLIC_KEY).getBytes());
+            byte[] byteData = messageDigest.digest();
+            for (byte single : byteData) {
+                sb.append(Integer.toString((single & 0xff) + 0x100, 16).substring(1));
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("Characters", "MD5 hash didn't work");
         }
+        return sb.toString();
     }
+
 }

@@ -15,8 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.ProjectLists"
-            android:label="Example"
-            android:parentActivityName=".view.PersonNamesListScreen">
+            android:label="Example">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,6 +24,7 @@
         </activity>
         <activity android:name=".view.MainActivity" />
         <activity android:name=".view.Characters"></activity>
+        <activity android:name=".view.PersonNamesListScreen"></activity>
     </application>
 
 </manifest>

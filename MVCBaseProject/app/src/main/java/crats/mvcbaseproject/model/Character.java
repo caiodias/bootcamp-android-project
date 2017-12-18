@@ -11,15 +11,15 @@ public class Character {
     private String Name;
     private int ID;
     private String Desc;
-    private Bitmap Image;
+
     private int AvailableComics;
 
 
-    public Character(String name, int ID, String descrp, Bitmap image, int availableComics){
+    public Character(String name, int ID, String descrp, int availableComics){
         Name = name;
         ID = ID;
         Desc = descrp;
-        Image = image;
+
         AvailableComics = availableComics;
 
     }
@@ -36,9 +36,7 @@ public class Character {
         return Desc;
     }
 
-    public Bitmap getImage(){
-        return Image;
-    }
+
 
     public int getAvailableComics(){
         return AvailableComics;

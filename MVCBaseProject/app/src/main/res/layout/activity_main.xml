@@ -14,7 +14,7 @@
         android:alpha=".6"
         android:contentDescription="Background"
         android:scaleType="centerCrop"
-        android:src="@drawable/background" />
+         />
 
     <ScrollView
         android:layout_width="match_parent"
