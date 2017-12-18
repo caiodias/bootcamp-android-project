@@ -5,21 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha=".9"
-    android:background="@color/colorPrimaryDark">
+    android:background="@android:color/darker_gray">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha=".6"
         android:contentDescription="Background"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/colorPrimary"
+        android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
         android:footerDividersEnabled="false" />
 

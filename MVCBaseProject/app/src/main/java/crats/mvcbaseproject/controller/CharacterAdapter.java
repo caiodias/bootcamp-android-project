@@ -48,7 +48,7 @@ public class CharacterAdapter extends ArrayAdapter {
         image.setImageBitmap(character.getImage());
         charName.setText(character.getCharName());
         charDescrp.setText(character.getDecrp());
-        comicsNumber.setText("Appeared in Over " + character.getAvailableComics() + " Comics");
+        comicsNumber.setText("Appeared in " + character.getAvailableComics() + " Comics");
         return listItemView;
     }
 }

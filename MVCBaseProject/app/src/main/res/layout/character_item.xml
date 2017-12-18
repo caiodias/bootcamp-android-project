@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:alpha=".9"
+    android:background="@android:color/background_dark"
     android:minHeight="92dp"
-    android:background="@color/colorPrimaryDark"
     android:orientation="horizontal">
 
     <ImageView
@@ -58,21 +58,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@android:color/white"
             android:visibility="gone"
             tools:text="available comics" />
 
-        <Button
-            android:id="@+id/open_wiki_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:background="#000000"
-            android:focusable="false"
-            android:text="Open Wiki"
-            android:textColor="@android:color/holo_orange_light"
-            android:visibility="gone" />
+
 
     </LinearLayout>
 
