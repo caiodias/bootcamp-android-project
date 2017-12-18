@@ -37,7 +37,7 @@ import static com.android.volley.toolbox.Volley.newRequestQueue;
 public class CharacterController implements ICharacterApi {
     private static CharacterController instance = null;
     private ArrayList<Character> listOfObjects= new ArrayList<Character>();
-    private final int LIMIT = 15;
+    private final int LIMIT = 10;
     private ICharacterApi iCharacterApi = null;
     private ICharacterController iCharacterController = null;
     private int offset = 0;
@@ -122,8 +122,9 @@ public class CharacterController implements ICharacterApi {
 
                                 JSONObject image = curr.getJSONObject("thumbnail");
                                 String imageUrl = image.getString("path") + "." + image.getString("extension");
-                               ;
-                                Character character = new Character(name, id, descrp, availableComics);
+
+                                Bitmap imageBitmap = getBitmapFromURL(imageUrl);
+                                Character character = new Character(name, id, descrp, imageBitmap, availableComics);
                                 listOfObjects.add(character);
                             }
 
@@ -153,20 +154,20 @@ public class CharacterController implements ICharacterApi {
 
         return jsonObjectRequest;
     }
-//    public static Bitmap getBitmapFromURL(String src) {
-//        try {
-//            java.net.URL url = new java.net.URL(src);
-//            HttpURLConnection connection = (HttpURLConnection) url
-//                    .openConnection();
-//            connection.setDoInput(true);
-//            connection.connect();
-//            InputStream input = connection.getInputStream();
-//            return BitmapFactory.decodeStream(input);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static String getMD5Hash(String timeStamp) {
         StringBuilder sb = new StringBuilder();
         try {
