@@ -1,4 +1,4 @@
-package crats.mvcbaseproject;
+package crats.mvcbaseproject.view;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,10 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import crats.mvcbaseproject.R;
+import crats.mvcbaseproject.view.PersonNamesListScreen;
+
 public class ProjectLists extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     ListView projectlistView;
-    String [] projectList = {"ProDigi"};
+    String [] projectList = {"ProDigi","Arshdeep Boparai"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,10 @@ public class ProjectLists extends AppCompatActivity implements AdapterView.OnIte
             case 0:
                 Intent intent = new Intent(this, PersonNamesListScreen.class);
                 startActivity(intent);
+                break;
+            case 1:
+                Intent intent1 = new Intent(this, MainActivity.class);
+                startActivity(intent1);
                 break;
             default:
                 setContentView(R.layout.project_lists);

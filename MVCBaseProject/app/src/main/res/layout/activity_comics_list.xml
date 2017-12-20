@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="crats.mvcbaseproject.view.ProjectLists">
+    android:id="@+id/objectListView"
+    tools:context="crats.mvcbaseproject.view.ComicsListScreen">
+
 
     <ListView
         android:layout_width="match_parent"
-        android:id="@+id/projectListView"
+        android:id="@+id/customObjectListView2"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
+
 </RelativeLayout>
